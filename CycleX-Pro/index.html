@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>CycleX Pro</title>
+
+<meta name="theme-color" content="#fc4c02">
+
+<link rel="manifest" href="manifest.json">
+
+<link rel="stylesheet" href="css/style.css">
+
+<link rel="stylesheet"
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+
+<body>
+
+<header>
+
+<div class="logo">
+🚴 CycleX Pro
+</div>
+
+<div class="status">
+<span id="gpsStatus">GPS Ready</span>
+</div>
+
+</header>
+
+<!-- SPEED / HR / CADENCE -->
+
+<section class="gauges">
+
+<div class="gauge-card">
+
+<svg class="gauge" viewBox="0 0 200 200">
+
+<circle class="bg-ring"
+cx="100"
+cy="100"
+r="85"/>
+
+<circle
+id="speedRing"
+class="progress-ring"
+cx="100"
+cy="100"
+r="85"/>
+
+</svg>
+
+<div class="gauge-text">
+
+<h1 id="speedValue">0</h1>
+
+<span>km/h</span>
+
+</div>
+
+<p>Speed</p>
+
+</div>
+
+<div class="gauge-card">
+
+<svg class="gauge" viewBox="0 0 200 200">
+
+<circle class="bg-ring"
+cx="100"
+cy="100"
+r="85"/>
+
+<circle
+id="hrRing"
+class="progress-ring"
+cx="100"
+cy="100"
+r="85"/>
+
+</svg>
+
+<div class="gauge-text">
+
+<h1 id="hrValue">--</h1>
+
+<span>bpm</span>
+
+</div>
+
+<p>Heart Rate</p>
+
+</div>
+
+<div class="gauge-card">
+
+<svg class="gauge" viewBox="0 0 200 200">
+
+<circle class="bg-ring"
+cx="100"
+cy="100"
+r="85"/>
+
+<circle
+id="cadenceRing"
+class="progress-ring"
+cx="100"
+cy="100"
+r="85"/>
+
+</svg>
+
+<div class="gauge-text">
+
+<h1 id="cadenceValue">--</h1>
+
+<span>rpm</span>
+
+</div>
+
+<p>Cadence</p>
+
+</div>
+
+</section>
+
+<!-- RIDE METRICS -->
+
+<section class="stats-grid">
+
+<div class="card">
+<h3>Distance</h3>
+<p id="distance">0.00 km</p>
+</div>
+
+<div class="card">
+<h3>Calories</h3>
+<p id="calories">0</p>
+</div>
+
+<div class="card">
+<h3>Current Speed</h3>
+<p id="currentSpeed">0 km/h</p>
+</div>
+
+<div class="card">
+<h3>Average Speed</h3>
+<p id="avgSpeed">0 km/h</p>
+</div>
+
+<div class="card">
+<h3>Max Speed</h3>
+<p id="maxSpeed">0 km/h</p>
+</div>
+
+<div class="card">
+<h3>Elevation</h3>
+<p id="elevation">0 m</p>
+</div>
+
+<div class="card">
+<h3>Total Ascent</h3>
+<p id="ascent">0 m</p>
+</div>
+
+<div class="card">
+<h3>Total Descent</h3>
+<p id="descent">0 m</p>
+</div>
+
+<div class="card">
+<h3>Elapsed Time</h3>
+<p id="elapsedTime">00:00:00</p>
+</div>
+
+<div class="card">
+<h3>Moving Time</h3>
+<p id="movingTime">00:00:00</p>
+</div>
+
+</section>
+
+<!-- GOALS -->
+
+<section class="goals">
+
+<div class="goal-card">
+
+<h2>Daily Goal</h2>
+
+<div class="goal-circle">
+
+<svg viewBox="0 0 120 120">
+
+<circle
+class="goal-bg"
+cx="60"
+cy="60"
+r="50"/>
+
+<circle
+id="dailyGoalRing"
+class="goal-progress"
+cx="60"
+cy="60"
+r="50"/>
+
+</svg>
+
+<div id="dailyGoalText">
+0%
+</div>
+
+</div>
+
+</div>
+
+<div class="goal-card">
+
+<h2>Weekly Goal</h2>
+
+<div class="goal-circle">
+
+<svg viewBox="0 0 120 120">
+
+<circle
+class="goal-bg"
+cx="60"
+cy="60"
+r="50"/>
+
+<circle
+id="weeklyGoalRing"
+class="goal-progress"
+cx="60"
+cy="60"
+r="50"/>
+
+</svg>
+
+<div id="weeklyGoalText">
+0%
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- WEATHER -->
+
+<section class="weather-card">
+
+<h2>Weather</h2>
+
+<div class="weather-grid">
+
+<div>
+Temperature
+<span id="temp">--°C</span>
+</div>
+
+<div>
+Wind
+<span id="wind">-- km/h</span>
+</div>
+
+<div>
+Conditions
+<span id="conditions">---</span>
+</div>
+
+</div>
+
+</section>
+
+<!-- COMPASS -->
+
+<section class="compass-card">
+
+<h2>Compass</h2>
+
+<div id="compass">
+
+🧭
+
+</div>
+
+<div id="heading">
+
+N
+
+</div>
+
+</section>
+
+<!-- MAP -->
+
+<section class="map-wrapper">
+
+<div id="map"></div>
+
+</section>
+
+<!-- CONTROLS -->
+
+<section class="controls">
+
+<button id="startBtn">
+
+▶ Start Ride
+
+</button>
+
+<button id="pauseBtn">
+
+⏸ Pause
+
+</button>
+
+<button id="stopBtn">
+
+⏹ Stop
+
+</button>
+
+<button id="exportBtn">
+
+⬇ GPX
+
+</button>
+
+<input
+type="file"
+id="gpxImport"
+accept=".gpx"
+hidden>
+
+<button id="importBtn">
+
+⬆ GPX
+
+</button>
+
+</section>
+
+<!-- LAST RIDE -->
+
+<section class="ride-history">
+
+<h2>Last Saved Ride</h2>
+
+<div id="lastRide">
+
+No ride found
+
+</div>
+
+</section>
+
+<!-- SCRIPTS -->
+
+<script src="js/app.js"></script>
+<script src="js/gps.js"></script>
+<script src="js/gauges.js"></script>
+<script src="js/weather.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/speech.js"></script>
+<script src="js/goals.js"></script>
+<script src="js/gpx.js"></script>
+<script src="js/compass.js"></script>
+
+<script>
+
+if('serviceWorker' in navigator){
+
+navigator.serviceWorker.register(
+'service-worker.js'
+);
+
+}
+
+</script>
+
+</body>
+</html>
